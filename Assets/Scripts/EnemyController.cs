@@ -104,7 +104,7 @@ public class EnemyController : MonoBehaviour
             }
             else
             {
-                Debug.Log("Killed player!");
+                Debug.Log("Player lost 1 hit point!");
             }
         }
 

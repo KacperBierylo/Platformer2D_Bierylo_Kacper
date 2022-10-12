@@ -91,10 +91,10 @@ public class PlayerControllerLevel1 : MonoBehaviour
             other.gameObject.SetActive(false);
         }
         else if (other.CompareTag("Exit")){
-            if (keyNumber != maxKeyNumber) Debug.Log($"Brakuje ci jeszcze: {maxKeyNumber - keyNumber} aby móc opóœciæ poziom!");
+            if (keyNumber != maxKeyNumber) Debug.Log($"You need: {maxKeyNumber - keyNumber} more keys to leave this level!");
             else
             {
-                Debug.Log("Koniec poziomu!");
+                Debug.Log("Well done! You finished this level!");
             }
             
         }
@@ -120,14 +120,14 @@ public class PlayerControllerLevel1 : MonoBehaviour
         else if (other.CompareTag("Key"))
         {
             keyNumber++;
-            Debug.Log($"Podniesiono klucz! Liczba kluczy: {keyNumber}");
+            Debug.Log($"You found the key! Number of keys: {keyNumber}");
             other.gameObject.SetActive(false);
         }
         else if (other.CompareTag("HitPoint"))
         {
             lives++;
             other.gameObject.SetActive(false);
-            Debug.Log($"Masz teraz: {lives} ¿yæ!");
+            Debug.Log($"You have: {lives} hit points!");
         }
     }
 
