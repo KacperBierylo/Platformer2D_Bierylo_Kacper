@@ -31,31 +31,36 @@ public class PlayerControllerLevel1 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        isWalking = false;
-        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+
+        if (GameManager.instance.currentGameState == GameState.GS_GAME)
         {
-            if (!isFacingRight) flip();
-            // transform.Translate(moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
-            MoveRight();
-            isWalking = true;
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
-        {
-            if (isFacingRight) flip();
-            //transform.Translate(-moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
-            MoveLeft();
-            isWalking = true;
-        }
-        //rigidBody.velocity = new Vector2(0, rigidBody.velocity.y);
-        else if (rigidBody.velocity.x != 0) rigidBody.velocity = new Vector2(0, rigidBody.velocity.y);
+            isWalking = false;
+            if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+            {
+                if (!isFacingRight) flip();
+                // transform.Translate(moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
+                MoveRight();
+                isWalking = true;
+            }
+            else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+            {
+                if (isFacingRight) flip();
+                //transform.Translate(-moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
+                MoveLeft();
+                isWalking = true;
+            }
+            //rigidBody.velocity = new Vector2(0, rigidBody.velocity.y);
+            else if (rigidBody.velocity.x != 0) rigidBody.velocity = new Vector2(0, rigidBody.velocity.y);
 
 
-        if (Input.GetKeyDown(KeyCode.Space))
-            jump();
-        else if (Input.GetKeyDown(KeyCode.F2))
-            flyJump();
-        animator.SetBool("isGrounded", isGrounded());
-        animator.SetBool("isWalking", isWalking);
+            if (Input.GetKeyDown(KeyCode.Space))
+                jump();
+            else if (Input.GetKeyDown(KeyCode.F2))
+                flyJump();
+            animator.SetBool("isGrounded", isGrounded());
+            animator.SetBool("isWalking", isWalking);
+
+        }
     }
     bool isGrounded()
     {
@@ -86,6 +91,7 @@ public class PlayerControllerLevel1 : MonoBehaviour
     {
         if (other.CompareTag("Hel3"))
         {
+            GameManager.instance.AddHel(1);
             score += 1;
             Debug.Log($"Score: {score}");
             other.gameObject.SetActive(false);
@@ -103,12 +109,18 @@ public class PlayerControllerLevel1 : MonoBehaviour
             if (other.gameObject.transform.position.y + killOffset < this.transform.position.y)
             {
                 score += 10;
+                GameManager.instance.AddEnemyDefeated(1);
                 Debug.Log($"Enemy Killed! Score:{score}");
             }
             else
             {
-                lives--;
-                if (lives <= 0)
+
+                if (lives > 1)
+                {
+                    GameManager.instance.addHitPoints(-1);
+                    lives--;
+                }
+                else
                 {
                     Debug.Log("Game over!");
                     this.transform.position = startPosition;
@@ -120,12 +132,14 @@ public class PlayerControllerLevel1 : MonoBehaviour
         else if (other.CompareTag("Key"))
         {
             keyNumber++;
+            GameManager.instance.AddKey(1);
             Debug.Log($"You found the key! Number of keys: {keyNumber}");
             other.gameObject.SetActive(false);
         }
         else if (other.CompareTag("HitPoint"))
         {
             lives++;
+            GameManager.instance.addHitPoints(1);
             other.gameObject.SetActive(false);
             Debug.Log($"You have: {lives} hit points!");
         }
