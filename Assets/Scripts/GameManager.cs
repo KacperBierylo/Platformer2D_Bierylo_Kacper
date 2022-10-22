@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public enum GameState
 {
     GS_PAUSEMENU,
@@ -13,13 +14,15 @@ public class GameManager : MonoBehaviour
 {
     public GameState currentGameState = GameState.GS_PAUSEMENU;
     public static GameManager instance;
-    public Canvas menuCanvas;
+    //public Canvas menuCanvas;
     public Canvas inGameCanvas;
+    public Canvas pauseMenuCanvas;
     public Image[] keysTab;
     public Image[] hitPointsTab;
+    //public GameObject PauseImage;
     public Text helText;
     public Text enemiesDefeatedText;
-    public Text hitPointsText;
+    //public Text hitPointsText;
     private int hel = 0;
     private int keys = 0;
     private int hitPoints = 3;
@@ -29,18 +32,14 @@ public class GameManager : MonoBehaviour
     void SetGameState(GameState newGameState)
     {
         currentGameState = newGameState;
-        if(newGameState == GameState.GS_GAME)
-        {
-            inGameCanvas.enabled = true;
-        }
-        else if (newGameState == GameState.GS_PAUSEMENU)
-        {
-            inGameCanvas.enabled = false;
-        }
+        inGameCanvas.enabled = (currentGameState == GameState.GS_GAME);
+        pauseMenuCanvas.enabled = (currentGameState == GameState.GS_PAUSEMENU);
+
     }
     public void InGame()
     {
         SetGameState(GameState.GS_GAME);
+        //PauseImage.gameObject.SetActive(false);
     }
     public void GameOver()
     {
@@ -48,6 +47,7 @@ public class GameManager : MonoBehaviour
     }
     public void PauseMenu()
     {
+        //PauseImage.gameObject.SetActive(true);
         SetGameState(GameState.GS_PAUSEMENU);
     }
 
@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        InGame();
         helText.text = hel.ToString();
         enemiesDefeatedText.text = enemiesDefeated.ToString();
         for(int i = 0; i < keysTab.Length; i++)
@@ -79,18 +80,52 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.S) && currentGameState == GameState.GS_PAUSEMENU)
+ /*       if(Input.GetKeyDown(KeyCode.S) && currentGameState == GameState.GS_PAUSEMENU)
+        {
+            InGame();
+        }*/
+
+        if(Input.GetKeyDown(KeyCode.Escape) && currentGameState == GameState.GS_PAUSEMENU)
         {
             InGame();
         }
+        else if(Input.GetKeyDown(KeyCode.Escape) && currentGameState == GameState.GS_GAME)
+        {
+            PauseMenu();
+        }
+        if(currentGameState == GameState.GS_GAME)
         timer += Time.deltaTime;
         //timerText.text = timer.ToString();//string.Format("{0:00}:{1:00}", minutes, seconds)
-        int minutes = (int)(timer / 60000*1000);
-        int seconds = (int)(timer / (1000 - 60 * minutes)*1000);
+        int minutes = (int)(timer / 60f);
+        int seconds = ((int)timer) % 60;
         //Debug.Log((timer / 60000 * 1000*60));
-        int milliseconds = (int)timer - minutes * 60000 - 1000 * seconds;
+        //int milliseconds = (int)timer - minutes * 60000 - 1000 * seconds;
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         //Debug.Log(seconds.ToString());
+    }
+
+
+    public void OnResumeButtonClicked()
+    {
+        InGame();
+    }
+
+    public void OnRestartButtonClicked()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void OnExitButtonClicked()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void OnExitToDesktopButtonClicked()
+    {
+    #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false; 
+    #endif
+        Application.Quit();
     }
 
     public void AddKey(int keyNumber)
@@ -112,13 +147,10 @@ public class GameManager : MonoBehaviour
     {
         if (hitPointsNumber > 0)
         {
-            //Debug.Log("dupa");
             //hitPoints += hitPointsNumber;
             //hitPointsText.text = hitPoints.ToString();
-            //Debug.Log("dupa2");
             for (int i = 0; i < hitPointsNumber; i++)
             {
-                // Debug.Log("dupaLoop");
                 hitPointsTab[hitPoints].gameObject.SetActive(true);
                 hitPoints += 1;
             }

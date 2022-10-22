@@ -71,7 +71,7 @@ public class PlayerControllerLevel1 : MonoBehaviour
     {
         if (isGrounded()){
             rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            Debug.Log("jumping");
+            //Debug.Log("jumping");
         }
     }
 
