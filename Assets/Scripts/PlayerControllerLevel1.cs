@@ -61,6 +61,10 @@ public class PlayerControllerLevel1 : MonoBehaviour
             animator.SetBool("isWalking", isWalking);
 
         }
+        else
+        {
+            rigidBody.velocity = new Vector2(0, 0);
+        }
     }
     bool isGrounded()
     {
@@ -101,8 +105,14 @@ public class PlayerControllerLevel1 : MonoBehaviour
             else
             {
                 Debug.Log("Well done! You finished this level!");
+
             }
-            
+            if (GameManager.instance.keysCompleted)
+            {
+                rigidBody.velocity = new Vector2(0, 0);
+                GameManager.instance.LevelCompleted();
+            }
+
         }
         else if (other.CompareTag("Enemy"))
         {

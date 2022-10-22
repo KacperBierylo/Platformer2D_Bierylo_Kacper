@@ -12,11 +12,12 @@ public enum GameState
 }
 public class GameManager : MonoBehaviour
 {
-    public GameState currentGameState = GameState.GS_PAUSEMENU;
+    public GameState currentGameState = GameState.GS_GAME;
     public static GameManager instance;
     //public Canvas menuCanvas;
     public Canvas inGameCanvas;
     public Canvas pauseMenuCanvas;
+    public Canvas leveCompletedCanvas;
     public Image[] keysTab;
     public Image[] hitPointsTab;
     //public GameObject PauseImage;
@@ -28,13 +29,17 @@ public class GameManager : MonoBehaviour
     private int hitPoints = 3;
     private int enemiesDefeated = 0;
     private float timer = 0;
+
+    public int maxKeyNumber = 3;
+    public bool keysCompleted = false;
+
     public Text timerText;
     void SetGameState(GameState newGameState)
     {
         currentGameState = newGameState;
         inGameCanvas.enabled = (currentGameState == GameState.GS_GAME);
         pauseMenuCanvas.enabled = (currentGameState == GameState.GS_PAUSEMENU);
-
+        leveCompletedCanvas.enabled = (currentGameState == GameState.GS_LEVELCOMPLETED);
     }
     public void InGame()
     {
@@ -51,7 +56,7 @@ public class GameManager : MonoBehaviour
         SetGameState(GameState.GS_PAUSEMENU);
     }
 
-    public void LevelCOmpleted()
+    public void LevelCompleted()
     {
         SetGameState(GameState.GS_LEVELCOMPLETED);
     }
@@ -74,7 +79,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PauseMenu();
+        //PauseMenu();
+        InGame();
     }
 
     // Update is called once per frame
@@ -128,6 +134,12 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
+    public void OnNextLevelButtonClicked()
+    {
+        SceneManager.LoadScene("Level2");
+    }
+
+
     public void AddKey(int keyNumber)
     {
         for (int i = 0; i < keyNumber; i++)
@@ -135,6 +147,7 @@ public class GameManager : MonoBehaviour
             keysTab[keys].color = Color.white;
             keys += 1;
         }
+        if (keys == maxKeyNumber) keysCompleted = true;
     }
 
     public void AddEnemyDefeated(int enemyNumber)
