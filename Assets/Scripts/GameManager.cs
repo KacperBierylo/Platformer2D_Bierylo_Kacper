@@ -18,11 +18,14 @@ public class GameManager : MonoBehaviour
     public Canvas inGameCanvas;
     public Canvas pauseMenuCanvas;
     public Canvas leveCompletedCanvas;
+    public Canvas gameOverCanvas;
     public Image[] keysTab;
     public Image[] hitPointsTab;
     //public GameObject PauseImage;
     public Text helText;
     public Text enemiesDefeatedText;
+    private int score = 0;
+    public Text totalScore;
     //public Text hitPointsText;
     private int hel = 0;
     private int keys = 0;
@@ -40,6 +43,7 @@ public class GameManager : MonoBehaviour
         inGameCanvas.enabled = (currentGameState == GameState.GS_GAME);
         pauseMenuCanvas.enabled = (currentGameState == GameState.GS_PAUSEMENU);
         leveCompletedCanvas.enabled = (currentGameState == GameState.GS_LEVELCOMPLETED);
+        gameOverCanvas.enabled = (currentGameState == GameState.GS_GAMEOVER);
     }
     public void InGame()
     {
@@ -59,6 +63,8 @@ public class GameManager : MonoBehaviour
     public void LevelCompleted()
     {
         SetGameState(GameState.GS_LEVELCOMPLETED);
+        AddScore(-((int)timer)/20);
+        AddScore(hitPoints);
     }
 
     private void Awake()
@@ -67,6 +73,7 @@ public class GameManager : MonoBehaviour
         InGame();
         helText.text = hel.ToString();
         enemiesDefeatedText.text = enemiesDefeated.ToString();
+        totalScore.text = score.ToString();
         for(int i = 0; i < keysTab.Length; i++)
         {
             keysTab[i].color = Color.grey;
@@ -154,6 +161,7 @@ public class GameManager : MonoBehaviour
     {
         enemiesDefeated += enemyNumber;
         enemiesDefeatedText.text = enemiesDefeated.ToString();
+        AddScore(enemyNumber);
     }
 
     public void addHitPoints(int hitPointsNumber)
@@ -178,5 +186,12 @@ public class GameManager : MonoBehaviour
     {
         hel += helNumber;
         helText.text = hel.ToString();
+        AddScore(helNumber);
+    }
+
+    public void AddScore(int additionalScore)
+    {
+        score += additionalScore;
+        totalScore.text = score.ToString();
     }
 }

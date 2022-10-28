@@ -34,6 +34,7 @@ public class PlayerControllerLevel1 : MonoBehaviour
 
         if (GameManager.instance.currentGameState == GameState.GS_GAME)
         {
+            rigidBody.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
             isWalking = false;
             if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
             {
@@ -63,7 +64,8 @@ public class PlayerControllerLevel1 : MonoBehaviour
         }
         else
         {
-            rigidBody.velocity = new Vector2(0, 0);
+            rigidBody.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            //rigidBody.velocity = new Vector2(0, 0);
         }
     }
     bool isGrounded()
@@ -152,6 +154,12 @@ public class PlayerControllerLevel1 : MonoBehaviour
             GameManager.instance.addHitPoints(1);
             other.gameObject.SetActive(false);
             Debug.Log($"You have: {lives} hit points!");
+        }
+
+        else if (other.CompareTag("FallLevel"))
+        {
+            Debug.Log("Œmieræ przez spadek");
+            GameManager.instance.GameOver();
         }
     }
 

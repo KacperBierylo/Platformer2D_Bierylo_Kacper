@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - Key
   - HitPoint
+  - FallLevel
   layers:
   - Default
   - TransparentFX
