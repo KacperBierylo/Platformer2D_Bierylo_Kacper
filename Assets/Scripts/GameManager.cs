@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour
 
     public void addHitPoints(int hitPointsNumber)
     {
-        if (hitPointsNumber > 0)
+        if (hitPointsNumber == 1 && hitPoints < 5)
         {
             //hitPoints += hitPointsNumber;
             //hitPointsText.text = hitPoints.ToString();

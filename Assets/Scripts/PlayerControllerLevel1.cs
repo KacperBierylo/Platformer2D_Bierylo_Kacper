@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class PlayerControllerLevel1 : MonoBehaviour
 {
     public float moveSpeed = 4f;
@@ -103,13 +103,13 @@ public class PlayerControllerLevel1 : MonoBehaviour
             other.gameObject.SetActive(false);
         }
         else if (other.CompareTag("Exit")){
-            if (keyNumber != maxKeyNumber) Debug.Log($"You need: {maxKeyNumber - keyNumber} more keys to leave this level!");
+            if (keyNumber != maxKeyNumber && (SceneManager.GetActiveScene().name == "Level1")) Debug.Log($"You need: {maxKeyNumber - keyNumber} more keys to leave this level!");
             else
             {
                 Debug.Log("Well done! You finished this level!");
 
             }
-            if (GameManager.instance.keysCompleted)
+            if (GameManager.instance.keysCompleted || (SceneManager.GetActiveScene().name == "Level2"))
             {
                 rigidBody.velocity = new Vector2(0, 0);
                 GameManager.instance.LevelCompleted();
