@@ -8,7 +8,8 @@ public class LeaveTrigger : MonoBehaviour
     {
         if (other.gameObject.name == "Player")
         {
-            LevelGenerator.instance.AddPiece();
+            if(!LevelGenerator.instance.shouldFinish)
+                LevelGenerator.instance.AddPiece();
             LevelGenerator.instance.RemoveOldestPiece();
         }
     }

@@ -44,8 +44,8 @@ public class PlayerControllerLevel2 : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
                 jump();
-            //else if (Input.GetKeyDown(KeyCode.F2))
-                //flyJump();
+            else if (Input.GetKeyDown(KeyCode.F2))
+                flyjump();
             animator.SetBool("isGrounded", isGrounded());
             animator.SetBool("isWalking", isWalking);
 
@@ -73,6 +73,14 @@ public class PlayerControllerLevel2 : MonoBehaviour
             rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             //Debug.Log("jumping");
         }
+    }
+
+    void flyjump()
+    {
+        
+            rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            //Debug.Log("jumping");
+        
     }
 
     private void OnTriggerEnter2D(Collider2D other)

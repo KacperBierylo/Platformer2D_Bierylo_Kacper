@@ -114,6 +114,9 @@ public class GameManager : MonoBehaviour
         //Debug.Log((timer / 60000 * 1000*60));
         //int milliseconds = (int)timer - minutes * 60000 - 1000 * seconds;
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+
+        if (timer > LevelGenerator.instance.maxGameTime && !LevelGenerator.instance.shouldFinish)
+            LevelGenerator.instance.Finish();
         //Debug.Log(seconds.ToString());
     }
 

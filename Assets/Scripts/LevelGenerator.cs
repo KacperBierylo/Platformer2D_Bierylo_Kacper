@@ -10,14 +10,17 @@ public class LevelGenerator : MonoBehaviour
     public Transform levelStartPoint;
     public List<LevelPieceBasic> levelPrefabs = new List<LevelPieceBasic>();
     public List<LevelPieceBasic> pieces = new List<LevelPieceBasic>();
-
+    public bool shouldFinish = false;
     public LevelPieceBasic startPlatformPrefab;
+    public LevelPieceBasic endPlatformPrefab;
+    public int maxGameTime = 40;
     // Start is called before the first frame update
     void Start()
     {
         instance = this;
+        ShowPiece((LevelPieceBasic)Instantiate(startPlatformPrefab));
         AddPiece();
-        AddPiece();
+
     }
 
     public void  ShowPiece(LevelPieceBasic piece)
@@ -29,8 +32,8 @@ public class LevelGenerator : MonoBehaviour
                 levelStartPoint.position.y - piece.startPoint.localPosition.y);
         else
             piece.transform.position = new Vector2(
-            pieces[pieces.Count - 1].exitPoint.position.x - pieces[pieces.Count - 1].startPoint.position.x,
-            pieces[pieces.Count - 1].exitPoint.position.y - pieces[pieces.Count - 1].startPoint.position.y);
+            pieces[pieces.Count - 1].exitPoint.position.x - pieces[pieces.Count - 1].startPoint.localPosition.x,
+            pieces[pieces.Count - 1].exitPoint.position.y - pieces[pieces.Count - 1].startPoint.localPosition.y);
 
         pieces.Add(piece);
 
@@ -41,11 +44,12 @@ public class LevelGenerator : MonoBehaviour
     public void AddPiece()
     {
         gNumber++;
-        if (gNumber < maxGNumber)
-        {
-            int randomIndex = Random.Range(0, levelPrefabs.Count - 1);
-            LevelPieceBasic piece = (LevelPieceBasic)Instantiate(levelPrefabs[randomIndex]);
-            piece.transform.SetParent(this.transform, false);
+        //if (gNumber < maxGNumber)
+        //{
+        int randomIndex = Random.Range(0, levelPrefabs.Count - 1);
+        LevelPieceBasic piece = (LevelPieceBasic)Instantiate(levelPrefabs[randomIndex]);
+        ShowPiece(piece);
+ /*           piece.transform.SetParent(this.transform, false);
 
             if (pieces.Count < 1)
                 piece.transform.position = levelStartPoint.position;
@@ -69,7 +73,7 @@ public class LevelGenerator : MonoBehaviour
         else
         {
 
-        }
+        }*/
     }
 
     public void RemoveOldestPiece()
@@ -80,5 +84,11 @@ public class LevelGenerator : MonoBehaviour
             pieces.RemoveAt(0);
             Destroy(oldestPiece.gameObject);
         }
+    }
+
+    public void Finish()
+    {
+        shouldFinish = true;
+        ShowPiece((LevelPieceBasic)Instantiate(endPlatformPrefab));
     }
 }
