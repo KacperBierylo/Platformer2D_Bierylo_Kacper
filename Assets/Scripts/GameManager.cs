@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public Text enemiesDefeatedText;
     private int score = 0;
     public Text totalScore;
+    public Text highscoreText;
     //public Text hitPointsText;
     private int hel = 0;
     private int keys = 0;
@@ -37,8 +38,26 @@ public class GameManager : MonoBehaviour
     public bool keysCompleted = false;
 
     public Text timerText;
+
+    private int maxSecsToHighscore = 120;
+
     void SetGameState(GameState newGameState)
     {
+        if (newGameState == GameState.GS_LEVELCOMPLETED)
+        {
+            Scene currentScene = SceneManager.GetActiveScene();
+            if(currentScene.name == "Level1")
+            {
+                Debug.Log("oldBest: " + PlayerPrefs.GetInt("HighscoreLevel1"));
+                Debug.Log("newWynik: " + score);
+                if (score > PlayerPrefs.GetInt("HighscoreLevel1"))
+                {
+                    Debug.Log("Podmieniam!");
+                    PlayerPrefs.SetInt("HighscoreLevel1", score);
+                }
+                highscoreText.text = PlayerPrefs.GetInt("HighscoreLevel1").ToString();
+            }
+        }
         currentGameState = newGameState;
         inGameCanvas.enabled = (currentGameState == GameState.GS_GAME);
         pauseMenuCanvas.enabled = (currentGameState == GameState.GS_PAUSEMENU);
@@ -62,13 +81,18 @@ public class GameManager : MonoBehaviour
 
     public void LevelCompleted()
     {
-        SetGameState(GameState.GS_LEVELCOMPLETED);
-        AddScore(-((int)timer)/20);
+        AddScore(-((int)timer) / 20);
         AddScore(hitPoints);
+        Debug.Log("Wynik koncowy: " + score);
+        SetGameState(GameState.GS_LEVELCOMPLETED);
     }
 
     private void Awake()
     {
+        if (!PlayerPrefs.HasKey("HighscoreLevel1"))
+        {
+            PlayerPrefs.SetInt("HighscoreLevel1", 0);
+        }
         instance = this;
         InGame();
         helText.text = hel.ToString();
@@ -114,7 +138,7 @@ public class GameManager : MonoBehaviour
         //Debug.Log((timer / 60000 * 1000*60));
         //int milliseconds = (int)timer - minutes * 60000 - 1000 * seconds;
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-
+        if(SceneManager.GetActiveScene().name == "Level2")
         if (timer > LevelGenerator.instance.maxGameTime && !LevelGenerator.instance.shouldFinish)
             LevelGenerator.instance.Finish();
         //Debug.Log(seconds.ToString());

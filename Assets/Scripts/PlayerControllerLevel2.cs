@@ -12,9 +12,12 @@ public class PlayerControllerLevel2 : MonoBehaviour
     public Animator animator;
     private bool isWalking;
     private float killOffset = 0.2f;
+    public AudioClip collectSound;
+    private AudioSource source;
     private Vector2 startPosition;
     private void Awake()
     {
+        source = GetComponent<AudioSource>();
         rigidBody = GetComponent<Rigidbody2D>();
         startPosition = this.transform.position;
     }
@@ -87,6 +90,7 @@ public class PlayerControllerLevel2 : MonoBehaviour
     {
         if (other.CompareTag("Hel3"))
         {
+            source.PlayOneShot(collectSound, AudioListener.volume);
             GameManager.instance.AddHel(1);
             //score += 1;
             //Debug.Log($"Score: {score}");

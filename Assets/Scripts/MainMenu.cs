@@ -2,8 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
+
+    public Text highscoreLevel1Text;
+
+
+    private void Awake()
+    {
+        if (!PlayerPrefs.HasKey("HighscoreLevel1"))
+        {
+            PlayerPrefs.SetInt("HighscoreLevel1", 0);
+        }
+        highscoreLevel1Text.text = PlayerPrefs.GetInt("HighscoreLevel1").ToString();
+    }
     // Start is called before the first frame update
     void Start()
     {

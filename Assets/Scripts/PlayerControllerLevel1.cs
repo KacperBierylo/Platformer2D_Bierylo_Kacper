@@ -17,8 +17,11 @@ public class PlayerControllerLevel1 : MonoBehaviour
     private Vector2 startPosition;
     private int maxKeyNumber = 3;
     int keyNumber = 0;
+    public AudioClip collectSound;
+    private AudioSource source;
     private void Awake()
     {
+        source = GetComponent<AudioSource>();
         rigidBody = GetComponent<Rigidbody2D>();
         startPosition = this.transform.position;
     }
@@ -97,6 +100,7 @@ public class PlayerControllerLevel1 : MonoBehaviour
     {
         if (other.CompareTag("Hel3"))
         {
+            source.PlayOneShot(collectSound, AudioListener.volume);
             GameManager.instance.AddHel(1);
             score += 1;
             Debug.Log($"Score: {score}");
