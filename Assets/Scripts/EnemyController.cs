@@ -16,7 +16,7 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-        startPositionX = this.transform.position.x;
+        startPositionX = this.transform.localPosition.x;
         //this.transform.position = new Vector2(Random.Range(startPositionX - XMin, startPositionX + xMax), this.transform.position.y);
         //Debug.Log($"startPositionX: {startPositionX}");
         rigidBody = GetComponent<Rigidbody2D>();
@@ -32,7 +32,7 @@ public class EnemyController : MonoBehaviour
     {
         if (isMovingRight)
         {
-            if (this.transform.position.x < startPositionX + xMax)
+            if (this.transform.localPosition.x < startPositionX + xMax)
             {
                 MoveRight();
             }
@@ -45,7 +45,7 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
-            if (this.transform.position.x > startPositionX - XMin)
+            if (this.transform.localPosition.x > startPositionX - XMin)
             {
                 MoveLeft();
             }
