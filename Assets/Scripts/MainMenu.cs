@@ -7,7 +7,7 @@ public class MainMenu : MonoBehaviour
 {
 
     public Text highscoreLevel1Text;
-
+    public Text highscoreLevel2Text;
 
     private void Awake()
     {
@@ -16,6 +16,11 @@ public class MainMenu : MonoBehaviour
             PlayerPrefs.SetInt("HighscoreLevel1", 0);
         }
         highscoreLevel1Text.text = PlayerPrefs.GetInt("HighscoreLevel1").ToString();
+        if (!PlayerPrefs.HasKey("HighscoreLevel2"))
+        {
+            PlayerPrefs.SetInt("HighscoreLevel2", 0);
+        }
+        highscoreLevel2Text.text = PlayerPrefs.GetInt("HighscoreLevel2").ToString();
     }
     // Start is called before the first frame update
     void Start()

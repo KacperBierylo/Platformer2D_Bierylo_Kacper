@@ -8,7 +8,8 @@ public enum GameState
     GS_PAUSEMENU,
     GS_GAME,
     GS_LEVELCOMPLETED,
-    GS_GAMEOVER
+    GS_GAMEOVER,
+    GS_OPTIONS
 }
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
     public Canvas pauseMenuCanvas;
     public Canvas leveCompletedCanvas;
     public Canvas gameOverCanvas;
+    public Canvas optionCanvas;
     public Image[] keysTab;
     public Image[] hitPointsTab;
     //public GameObject PauseImage;
@@ -27,6 +29,8 @@ public class GameManager : MonoBehaviour
     private int score = 0;
     public Text totalScore;
     public Text highscoreText;
+    public Text highscoreLevel2Text;
+    public Text qualityName;
     //public Text hitPointsText;
     private int hel = 0;
     private int keys = 0;
@@ -46,7 +50,7 @@ public class GameManager : MonoBehaviour
         if (newGameState == GameState.GS_LEVELCOMPLETED)
         {
             Scene currentScene = SceneManager.GetActiveScene();
-            if(currentScene.name == "Level1")
+            if (currentScene.name == "Level1")
             {
                 Debug.Log("oldBest: " + PlayerPrefs.GetInt("HighscoreLevel1"));
                 Debug.Log("newWynik: " + score);
@@ -57,15 +61,28 @@ public class GameManager : MonoBehaviour
                 }
                 highscoreText.text = PlayerPrefs.GetInt("HighscoreLevel1").ToString();
             }
+            else if (currentScene.name == "Level2")
+            {
+                Debug.Log("oldBest: " + PlayerPrefs.GetInt("HighscoreLevel2"));
+                Debug.Log("newWynik: " + score);
+                if (score > PlayerPrefs.GetInt("HighscoreLevel2"))
+                {
+                    Debug.Log("Podmieniam!");
+                    PlayerPrefs.SetInt("HighscoreLevel2", score);
+                }
+                highscoreText.text = PlayerPrefs.GetInt("HighscoreLevel2").ToString();
+            }
         }
         currentGameState = newGameState;
         inGameCanvas.enabled = (currentGameState == GameState.GS_GAME);
         pauseMenuCanvas.enabled = (currentGameState == GameState.GS_PAUSEMENU);
         leveCompletedCanvas.enabled = (currentGameState == GameState.GS_LEVELCOMPLETED);
         gameOverCanvas.enabled = (currentGameState == GameState.GS_GAMEOVER);
+        optionCanvas.enabled = (currentGameState == GameState.GS_OPTIONS);
     }
     public void InGame()
     {
+        Time.timeScale = 1;
         SetGameState(GameState.GS_GAME);
         //PauseImage.gameObject.SetActive(false);
     }
@@ -75,6 +92,7 @@ public class GameManager : MonoBehaviour
     }
     public void PauseMenu()
     {
+        Time.timeScale = 0;
         //PauseImage.gameObject.SetActive(true);
         SetGameState(GameState.GS_PAUSEMENU);
     }
@@ -87,20 +105,34 @@ public class GameManager : MonoBehaviour
         SetGameState(GameState.GS_LEVELCOMPLETED);
     }
 
+    public void Options()
+    {
+        qualityName.text = QualitySettings.names[QualitySettings.GetQualityLevel()];
+        Time.timeScale = 0;
+        SetGameState(GameState.GS_OPTIONS);
+    }
     private void Awake()
     {
         if (!PlayerPrefs.HasKey("HighscoreLevel1"))
         {
             PlayerPrefs.SetInt("HighscoreLevel1", 0);
         }
+        if (!PlayerPrefs.HasKey("HighscoreLevel2"))
+        {
+            PlayerPrefs.SetInt("HighscoreLevel2", 0);
+        }
+
         instance = this;
         InGame();
         helText.text = hel.ToString();
         enemiesDefeatedText.text = enemiesDefeated.ToString();
         totalScore.text = score.ToString();
-        for(int i = 0; i < keysTab.Length; i++)
+        if (SceneManager.GetActiveScene().name != "Level2")
         {
-            keysTab[i].color = Color.grey;
+            for (int i = 0; i < keysTab.Length; i++)
+            {
+                keysTab[i].color = Color.grey;
+            }
         }
         for (int i = 3; i < hitPointsTab.Length; i++)
         {
@@ -171,8 +203,32 @@ public class GameManager : MonoBehaviour
     public void OnNextLevelButtonClicked()
     {
         SceneManager.LoadScene("Level2");
+        score = 0;
     }
 
+    public void OnOpitonsButtonCLicked()
+    {
+        Options();
+    }
+
+    public void SetVolume(float vol)
+    {
+        AudioListener.volume = vol;
+    }
+
+    public void OnMinusButtonCLicked()
+    {
+        QualitySettings.DecreaseLevel();
+        Debug.Log(QualitySettings.names[QualitySettings.GetQualityLevel()]);
+        qualityName.text = QualitySettings.names[QualitySettings.GetQualityLevel()];
+    }
+
+    public void OnPlusButtonCLicked()
+    {
+        QualitySettings.IncreaseLevel();
+        Debug.Log(QualitySettings.names[QualitySettings.GetQualityLevel()]);
+        qualityName.text = QualitySettings.names[QualitySettings.GetQualityLevel()];
+    }
 
     public void AddKey(int keyNumber)
     {

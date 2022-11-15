@@ -14,6 +14,7 @@ public class PlayerControllerLevel2 : MonoBehaviour
     private float killOffset = 0.2f;
     public AudioClip collectSound;
     private AudioSource source;
+    public AudioClip golemDeathSound;
     private Vector2 startPosition;
     private void Awake()
     {
@@ -116,6 +117,7 @@ public class PlayerControllerLevel2 : MonoBehaviour
             if (other.gameObject.transform.position.y + killOffset < this.transform.position.y)
             {
                 //score += 10;
+                source.PlayOneShot(golemDeathSound, AudioListener.volume);
                 GameManager.instance.AddEnemyDefeated(1);
                // Debug.Log($"Enemy Killed! Score:{score}");
             }

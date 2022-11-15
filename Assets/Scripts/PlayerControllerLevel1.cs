@@ -18,6 +18,8 @@ public class PlayerControllerLevel1 : MonoBehaviour
     private int maxKeyNumber = 3;
     int keyNumber = 0;
     public AudioClip collectSound;
+    public AudioClip golemDeathSound;
+    public AudioClip playerDeathSound;
     private AudioSource source;
     private void Awake()
     {
@@ -124,6 +126,7 @@ public class PlayerControllerLevel1 : MonoBehaviour
         {
             if (other.gameObject.transform.position.y + killOffset < this.transform.position.y)
             {
+                source.PlayOneShot(golemDeathSound, AudioListener.volume);
                 score += 10;
                 GameManager.instance.AddEnemyDefeated(1);
                 Debug.Log($"Enemy Killed! Score:{score}");
@@ -162,6 +165,7 @@ public class PlayerControllerLevel1 : MonoBehaviour
 
         else if (other.CompareTag("FallLevel"))
         {
+            source.PlayOneShot(playerDeathSound, AudioListener.volume);
             Debug.Log("Œmieræ przez spadek");
             GameManager.instance.GameOver();
         }
